@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Santi Vitality | Nutrición Inteligente para Niños Felices</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Santi Vitality</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="facturacion.html">Facturación</a></li>
+                    <li class="nav-item"><a class="nav-link" href="base_datos.html">Base de Datos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="historial_ventas.html">Historial de Ventas</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container mt-5">
+        <h2 class="text-success">Facturación</h2>
+        <p>Selecciona los productos y genera tu factura.</p>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <label for="producto">Producto:</label>
+                <select id="producto" class="form-select">
+                    <option value="">Selecciona un producto</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="cantidad">Cantidad:</label>
+                <input type="number" id="cantidad" class="form-control" min="1" value="1">
+            </div>
+            <div class="col-md-2">
+                <label for="precio">Precio Unitario:</label>
+                <input type="text" id="precio" class="form-control" readonly>
+            </div>
+            <div class="col-md-2">
+                <label for="total">Total:</label>
+                <input type="text" id="total" class="form-control" readonly>
+            </div>
+        </div>
+        
+        <button id="btnAgregar" class="btn btn-success mt-3" disabled>Agregar a Factura</button>
+        
+        <h3 class="mt-5 text-success">Factura</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody id="facturaBody"></tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end"><strong>Gran Total:</strong></td>
+                    <td id="granTotal">$0</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- Campo para ingresar número de WhatsApp -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="telefono">Número de WhatsApp:</label>
+                <input type="tel" id="telefono" class="form-control" placeholder="Ingresa el número de WhatsApp" required>
+            </div>
+        </div>
+        
+        <button class="btn btn-primary" id="btnEnviarWhatsApp">Enviar a WhatsApp</button>
+        <button class="btn btn-warning" id="btnGuardarVenta">Guardar Venta</button>
+        <button class="btn btn-danger" onclick="window.location.href='index.html'">Volver a Home</button>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "nutrisanti-b4944.firebaseapp.com",
+            projectId: "nutrisanti-b4944",
+            storageBucket: "nutrisanti-b4944.appspot.com",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "1:181448783075:web:43b59620907300165a81d6"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function cargarProductos() {
+            const selectProducto = document.getElementById("producto");
+            selectProducto.innerHTML = '<option value="">Selecciona un producto</option>';
+            const productosSnapshot = await getDocs(collection(db, "productos"));
+            productosSnapshot.forEach(doc => {
+                const producto = doc.data();
+                const precio = producto.precio || 0;
+                const option = document.createElement("option");
+                option.value = JSON.stringify({ nombre: producto.nombre, precio: precio });
+                option.textContent = `${producto.nombre} - $${precio.toLocaleString("es-CO")}`;
+                selectProducto.appendChild(option);
+            });
+        }
+
+        function actualizarPrecio() {
+            const productoSelect = document.getElementById("producto");
+            const precioInput = document.getElementById("precio");
+            const btnAgregar = document.getElementById("btnAgregar");
+            const producto = JSON.parse(productoSelect.value || "{}");
+
+            if (producto.nombre) {
+                precioInput.value = `$${producto.precio.toLocaleString("es-CO")}`;
+                btnAgregar.disabled = false;
+                calcularTotal();
+            } else {
+                precioInput.value = "";
+                btnAgregar.disabled = true;
+            }
+        }
+
+        function calcularTotal() {
+            const cantidad = parseInt(document.getElementById("cantidad").value) || 1;
+            const precio = parseInt(document.getElementById("precio").value.replace(/\D/g, "")) || 0;
+            const total = cantidad * precio;
+            document.getElementById("total").value = `$${total.toLocaleString("es-CO")}`;
+        }
+
+        function agregarProducto() {
+            const producto = JSON.parse(document.getElementById("producto").value || "{}");
+            const cantidad = parseInt(document.getElementById("cantidad").value) || 1;
+            const precio = producto.precio || 0;
+            const total = precio * cantidad;
+
+            if (!producto.nombre) return;
+
+            const facturaBody = document.getElementById("facturaBody");
+            const fila = `
+                <tr>
+                    <td>${producto.nombre}</td>
+                    <td>${cantidad}</td>
+                    <td>$${precio.toLocaleString("es-CO")}</td>
+                    <td>$${total.toLocaleString("es-CO")}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="eliminarFila(this)">Eliminar</button></td>
+                </tr>
+            `;
+            facturaBody.insertAdjacentHTML("beforeend", fila);
+            actualizarGranTotal();
+        }
+
+        function actualizarGranTotal() {
+            let total = 0;
+            document.querySelectorAll("#facturaBody tr td:nth-child(4)").forEach(td => {
+                total += parseInt(td.textContent.replace(/\D/g, "")) || 0;
+            });
+            document.getElementById("granTotal").textContent = `$${total.toLocaleString("es-CO")}`;
+        }
+
+        function eliminarFila(btn) {
+            btn.parentElement.parentElement.remove();
+            actualizarGranTotal();
+        }
+
+        function generarMensajeWhatsApp() {
+            let mensaje = "Hola, deseo realizar el siguiente pedido:\n";
+            const rows = document.querySelectorAll("#facturaBody tr");
+
+            rows.forEach(row => {
+                const producto = row.cells[0].innerText;
+                const cantidad = row.cells[1].innerText;
+                const precio = row.cells[2].innerText;
+                const total = row.cells[3].innerText;
+
+                mensaje += `${producto} - ${cantidad} x ${precio} = ${total}\n`;
+            });
+
+            return mensaje;
+        }
+
+        document.getElementById("producto").addEventListener("change", actualizarPrecio);
+        document.getElementById("cantidad").addEventListener("input", calcularTotal);
+        document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
+        document.getElementById("btnEnviarWhatsApp").addEventListener("click", enviarWhatsApp);
+        document.getElementById("btnGuardarVenta").addEventListener("click", guardarVenta);
+        document.addEventListener("DOMContentLoaded", cargarProductos);
+
+        async function guardarVenta() {
+            const detallesVenta = generarMensajeWhatsApp();
+            if (!detallesVenta.trim()) {
+                alert("No hay productos en la factura.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "ventas"), {
+                    detalles: detallesVenta,
+                    fecha: new Date().toISOString()
+                });
+                alert("Venta guardada correctamente.");
+            } catch (error) {
+                console.error("Error al guardar la venta:", error);
+                alert("Ocurrió un error al guardar la venta.");
+            }
+        }
+
+        function enviarWhatsApp() {
+            const telefono = document.getElementById("telefono").value;
+            if (!telefono) {
+                alert("Por favor, ingresa un número de WhatsApp.");
+                return;
+            }
+
+            const mensaje = generarMensajeWhatsApp();
+            const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+            window.open(url, "_blank");
+        }
+    </script>
+</body>
+</html>
