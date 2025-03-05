@@ -1,3 +1,5 @@
+/* Correcciones aplicadas en base_datos.js */
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
     getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc 
@@ -30,7 +32,7 @@ async function cargarProductos() {
             fila.setAttribute("data-id", docSnap.id);
             fila.innerHTML = `
                 <td contenteditable="true" id="nombre-${docSnap.id}">${producto.nombre}</td>
-                <td contenteditable="true" id="precio-${docSnap.id}">${producto.precioSugerido}</td>
+                <td contenteditable="true" id="precio-${docSnap.id}">$${producto.precioSugerido.toLocaleString("es-CO")}</td>
                 <td contenteditable="true" id="stock-${docSnap.id}">${producto.stock}</td>
                 <td>
                     <button class="btn btn-success btn-sm guardar-btn" data-id="${docSnap.id}">Guardar</button>
@@ -60,7 +62,7 @@ async function cargarProductos() {
 
 async function guardarCambios(id) {
     const nombre = document.getElementById(`nombre-${id}`).innerText.trim();
-    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.trim());
+    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.replace(/\D/g, ""));
     const stock = parseInt(document.getElementById(`stock-${id}`).innerText.trim());
 
     if (!nombre || isNaN(precio) || isNaN(stock)) {

@@ -1,232 +1,364 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santi Vitality | Nutrición Inteligente para Niños Felices</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Santi Vitality | Nutrición Inteligente para Niños Felices</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-        <div class="container">
-            <a class="navbar-brand" href="index.html">Santi Vitality</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="facturacion.html">Facturación</a></li>
-                    <li class="nav-item"><a class="nav-link" href="base_datos.html">Base de Datos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="historial_ventas.html">Historial de Ventas</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Santi Vitality</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="facturacion.html">Facturación</a></li>
+          <li class="nav-item"><a class="nav-link" href="base_datos.html">Base de Datos</a></li>
+          <li class="nav-item"><a class="nav-link" href="historial_ventas.html">Historial de Ventas</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <div class="container mt-5">
+    <h2 class="text-success">Facturación</h2>
+    <p>Selecciona los productos y genera tu factura.</p>
     
-    <div class="container mt-5">
-        <h2 class="text-success">Facturación</h2>
-        <p>Selecciona los productos y genera tu factura.</p>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <label for="producto">Producto:</label>
-                <select id="producto" class="form-select">
-                    <option value="">Selecciona un producto</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label for="cantidad">Cantidad:</label>
-                <input type="number" id="cantidad" class="form-control" min="1" value="1">
-            </div>
-            <div class="col-md-2">
-                <label for="precio">Precio Unitario:</label>
-                <input type="text" id="precio" class="form-control" readonly>
-            </div>
-            <div class="col-md-2">
-                <label for="total">Total:</label>
-                <input type="text" id="total" class="form-control" readonly>
-            </div>
-        </div>
-        
-        <button id="btnAgregar" class="btn btn-success mt-3" disabled>Agregar a Factura</button>
-        
-        <h3 class="mt-5 text-success">Factura</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Total</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody id="facturaBody"></tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="3" class="text-end"><strong>Gran Total:</strong></td>
-                    <td id="granTotal">$0</td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
-
-        <!-- Campo para ingresar número de WhatsApp -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="telefono">Número de WhatsApp:</label>
-                <input type="tel" id="telefono" class="form-control" placeholder="Ingresa el número de WhatsApp" required>
-            </div>
-        </div>
-        
-        <button class="btn btn-primary" id="btnEnviarWhatsApp">Enviar a WhatsApp</button>
-        <button class="btn btn-warning" id="btnGuardarVenta">Guardar Venta</button>
-        <button class="btn btn-danger" onclick="window.location.href='index.html'">Volver a Home</button>
+    <!-- Campo para el nombre del cliente -->
+    <div class="mb-3">
+      <label for="cliente" class="form-label">Cliente:</label>
+      <input type="text" id="cliente" class="form-control" placeholder="Nombre del cliente">
     </div>
     
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    <div class="row">
+      <div class="col-md-6">
+        <label for="producto">Producto:</label>
+        <select id="producto" class="form-select">
+          <option value="">Selecciona un producto</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" class="form-control" min="1" value="1">
+      </div>
+      <div class="col-md-2">
+        <label for="precio">Precio Unitario:</label>
+        <input type="text" id="precio" class="form-control" readonly>
+      </div>
+      <div class="col-md-2">
+        <label for="total">Total:</label>
+        <input type="text" id="total" class="form-control" readonly>
+      </div>
+    </div>
+    
+    <button id="btnAgregar" class="btn btn-success mt-3" disabled>Agregar a Factura</button>
+    
+    <h3 class="mt-5 text-success">Factura</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th>Cantidad</th>
+          <th>Precio Unitario</th>
+          <th>Total</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="facturaBody"></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-end"><strong>Gran Total:</strong></td>
+          <td id="granTotal">$0</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <!-- Campo para ingresar número de WhatsApp -->
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label for="telefono">Número de WhatsApp:</label>
+        <input type="tel" id="telefono" class="form-control" placeholder="Ingresa el número de WhatsApp" required>
+      </div>
+    </div>
+    
+    <button class="btn btn-primary" id="btnEnviarWhatsApp">Enviar a WhatsApp</button>
+    <button class="btn btn-warning" id="btnGuardarVenta">Guardar Venta</button>
+    <button class="btn btn-danger" onclick="window.location.href='index.html'">Volver a Home</button>
+  </div>
+  
+  <!-- Script de facturación -->
+  <script type="module">
+    /************************************************
+     * facturacion.js
+     * Maneja la generación y registro de ventas en Firebase,
+     * permitiendo ingresar el nombre del cliente, descontar
+     * el stock de productos y limpiar la factura.
+     ************************************************/
 
-        const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "nutrisanti-b4944.firebaseapp.com",
-            projectId: "nutrisanti-b4944",
-            storageBucket: "nutrisanti-b4944.appspot.com",
-            messagingSenderId: "TU_MESSAGING_SENDER_ID",
-            appId: "1:181448783075:web:43b59620907300165a81d6"
-        };
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      updateDoc,
+      doc,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    // Configuración de Firebase (reemplaza con tus credenciales)
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "nutrisanti-b4944.firebaseapp.com",
+      projectId: "nutrisanti-b4944",
+      storageBucket: "nutrisanti-b4944.appspot.com",
+      messagingSenderId: "TU_MESSAGING_SENDER_ID",
+      appId: "1:181448783075:web:43b59620907300165a81d6"
+    };
 
-        async function cargarProductos() {
-            const selectProducto = document.getElementById("producto");
-            selectProducto.innerHTML = '<option value="">Selecciona un producto</option>';
-            const productosSnapshot = await getDocs(collection(db, "productos"));
-            productosSnapshot.forEach(doc => {
-                const producto = doc.data();
-                const precio = producto.precio || 0;
-                const option = document.createElement("option");
-                option.value = JSON.stringify({ nombre: producto.nombre, precio: precio });
-                option.textContent = `${producto.nombre} - $${precio.toLocaleString("es-CO")}`;
-                selectProducto.appendChild(option);
-            });
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Referencias a elementos del HTML
+    const inputCliente = document.getElementById("cliente");
+    const selectProducto = document.getElementById("producto");
+    const inputCantidad = document.getElementById("cantidad");
+    const inputPrecio = document.getElementById("precio");
+    const inputTotal = document.getElementById("total");
+    const facturaBody = document.getElementById("facturaBody");
+    const granTotalElem = document.getElementById("granTotal");
+    const btnAgregar = document.getElementById("btnAgregar");
+    const btnGuardarVenta = document.getElementById("btnGuardarVenta");
+
+    // Eventos
+    document.addEventListener("DOMContentLoaded", cargarProductos);
+    selectProducto.addEventListener("change", actualizarPrecio);
+    inputCantidad.addEventListener("input", calcularTotal);
+    btnAgregar.addEventListener("click", agregarProducto);
+    btnGuardarVenta.addEventListener("click", guardarVenta);
+
+    /**
+     * Carga los productos desde Firebase y llena el <select>
+     */
+    async function cargarProductos() {
+      selectProducto.innerHTML = '<option value="">Selecciona un producto</option>';
+      try {
+        const snapshot = await getDocs(collection(db, "productos"));
+        snapshot.forEach(docSnap => {
+          const producto = docSnap.data();
+          const option = document.createElement("option");
+          option.value = JSON.stringify({
+            nombre: producto.nombre,
+            precio: producto.precioSugerido
+          });
+          option.textContent = `${producto.nombre} - $${formatearCOP(producto.precioSugerido)}`;
+          selectProducto.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      }
+    }
+
+    /**
+     * Actualiza el input de precio unitario según el producto seleccionado
+     */
+    function actualizarPrecio() {
+      const productoSeleccionado = selectProducto.value;
+      if (!productoSeleccionado) {
+        inputPrecio.value = "";
+        inputTotal.value = "";
+        btnAgregar.disabled = true;
+        return;
+      }
+      btnAgregar.disabled = false;
+      const { precio } = JSON.parse(productoSeleccionado);
+      inputPrecio.value = `$${formatearCOP(precio)}`;
+      calcularTotal();
+    }
+
+    /**
+     * Calcula el total (precio unitario x cantidad)
+     */
+    function calcularTotal() {
+      const cantidad = parseInt(inputCantidad.value) || 1;
+      const precio = parseInt(inputPrecio.value.replace(/\D/g, "")) || 0;
+      const total = cantidad * precio;
+      inputTotal.value = `$${formatearCOP(total)}`;
+    }
+
+    /**
+     * Agrega un producto a la tabla de factura
+     */
+    function agregarProducto() {
+      const productoSeleccionado = selectProducto.value;
+      if (!productoSeleccionado) return;
+      const { nombre, precio } = JSON.parse(productoSeleccionado);
+      const cantidad = parseInt(inputCantidad.value) || 1;
+      const subtotal = cantidad * precio;
+
+      const fila = document.createElement("tr");
+      fila.innerHTML = `
+        <td>${nombre}</td>
+        <td>${cantidad}</td>
+        <td>$${formatearCOP(precio)}</td>
+        <td>$${formatearCOP(subtotal)}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); actualizarGranTotal();">
+            Eliminar
+          </button>
+        </td>
+      `;
+      facturaBody.appendChild(fila);
+      actualizarGranTotal();
+    }
+
+    /**
+     * Suma todos los subtotales de la factura y actualiza el Gran Total
+     */
+    function actualizarGranTotal() {
+      let suma = 0;
+      facturaBody.querySelectorAll("tr").forEach(row => {
+        const subtotalCelda = row.cells[3].textContent || "$0";
+        const valor = parseInt(subtotalCelda.replace(/\D/g, "")) || 0;
+        suma += valor;
+      });
+      granTotalElem.textContent = `$${formatearCOP(suma)}`;
+    }
+
+    /**
+     * Guarda la venta en Firebase, descuenta el stock y limpia la factura
+     */
+    async function guardarVenta() {
+      const cliente = inputCliente.value.trim() || "Cliente desconocido";
+
+      // Recorrer la tabla para armar la lista de productos vendidos
+      const productosVendidos = [];
+      let totalVenta = 0;
+      facturaBody.querySelectorAll("tr").forEach(row => {
+        const celdas = row.querySelectorAll("td");
+        const nombreProducto = celdas[0].textContent;
+        const cantidad = parseInt(celdas[1].textContent);
+        const subtotal = parseInt(celdas[3].textContent.replace(/\D/g, "")) || 0;
+        totalVenta += subtotal;
+        productosVendidos.push({
+          nombre: nombreProducto,
+          cantidad: cantidad,
+          total: subtotal
+        });
+      });
+
+      if (productosVendidos.length === 0) {
+        alert("No hay productos en la factura.");
+        return;
+      }
+
+      const nuevaVenta = {
+        fecha: new Date().toISOString(),
+        cliente: cliente,
+        total: totalVenta,
+        productos: productosVendidos
+      };
+
+      try {
+        // Guardar la venta en la colección 'ventas'
+        await addDoc(collection(db, "ventas"), nuevaVenta);
+
+        // Descontar el stock de cada producto vendido
+        for (const p of productosVendidos) {
+          await descontarStock(p.nombre, p.cantidad);
         }
 
-        function actualizarPrecio() {
-            const productoSelect = document.getElementById("producto");
-            const precioInput = document.getElementById("precio");
-            const btnAgregar = document.getElementById("btnAgregar");
-            const producto = JSON.parse(productoSelect.value || "{}");
+        alert("Venta guardada correctamente y stock actualizado.");
 
-            if (producto.nombre) {
-                precioInput.value = `$${producto.precio.toLocaleString("es-CO")}`;
-                btnAgregar.disabled = false;
-                calcularTotal();
-            } else {
-                precioInput.value = "";
-                btnAgregar.disabled = true;
-            }
-        }
+        // Limpiar la factura y el campo de cliente
+        facturaBody.innerHTML = "";
+        granTotalElem.textContent = "$0";
+        inputCliente.value = "";
+      } catch (error) {
+        console.error("Error al guardar la venta:", error);
+        alert("Ocurrió un error al guardar la venta.");
+      }
+    }
 
-        function calcularTotal() {
-            const cantidad = parseInt(document.getElementById("cantidad").value) || 1;
-            const precio = parseInt(document.getElementById("precio").value.replace(/\D/g, "")) || 0;
-            const total = cantidad * precio;
-            document.getElementById("total").value = `$${total.toLocaleString("es-CO")}`;
-        }
+    /**
+     * Descuenta la cantidad vendida del stock en la colección 'productos'
+     */
+    async function descontarStock(nombreProducto, cantidadVendida) {
+      try {
+        const q = query(collection(db, "productos"), where("nombre", "==", nombreProducto));
+        const snapshot = await getDocs(q);
+        snapshot.forEach(async docSnap => {
+          const data = docSnap.data();
+          const nuevoStock = (data.stock || 0) - cantidadVendida;
+          if (nuevoStock < 0) {
+            console.warn(`Stock insuficiente para ${nombreProducto}`);
+            return;
+          }
+          await updateDoc(doc(db, "productos", docSnap.id), { stock: nuevoStock });
+        });
+      } catch (error) {
+        console.error("Error al descontar stock:", error);
+      }
+    }
 
-        function agregarProducto() {
-            const producto = JSON.parse(document.getElementById("producto").value || "{}");
-            const cantidad = parseInt(document.getElementById("cantidad").value) || 1;
-            const precio = producto.precio || 0;
-            const total = precio * cantidad;
+    /**
+     * Formatea un número en formato de pesos colombianos (COP)
+     */
+    function formatearCOP(valor) {
+      return valor.toLocaleString("es-CO");
+    }
 
-            if (!producto.nombre) return;
+    /**
+     * Genera el mensaje de WhatsApp con el formato solicitado.
+     * El mensaje incluye:
+     * - Encabezado en negrita.
+     * - El nombre del cliente.
+     * - Cada producto con cantidad y total.
+     * - El total a pagar en negrita.
+     * - Un mensaje de despedida y el enlace para pedidos y consultas.
+     */
+    function generarMensajeWhatsApp() {
+      const cliente = inputCliente.value.trim() || "Cliente desconocido";
+      let mensaje = `Gracias por tu compra en *NutriSanti*\nDistribuidora oficial de Emilio Come y Siéntete Vital\n\n`;
+      mensaje += `Pedido de: ${cliente}\n`;
+      
+      const rows = facturaBody.querySelectorAll("tr");
+      rows.forEach(row => {
+        const producto = row.cells[0].innerText;
+        const cantidad = row.cells[1].innerText;
+        const total = row.cells[3].innerText;
+        mensaje += `${producto} x${cantidad} - ${total}\n`;
+      });
+      
+      const granTotal = granTotalElem.textContent;
+      mensaje += `\nTotal a pagar: *${granTotal}*\n\n`;
 
-            const facturaBody = document.getElementById("facturaBody");
-            const fila = `
-                <tr>
-                    <td>${producto.nombre}</td>
-                    <td>${cantidad}</td>
-                    <td>$${precio.toLocaleString("es-CO")}</td>
-                    <td>$${total.toLocaleString("es-CO")}</td>
-                    <td><button class="btn btn-danger btn-sm" onclick="eliminarFila(this)">Eliminar</button></td>
-                </tr>
-            `;
-            facturaBody.insertAdjacentHTML("beforeend", fila);
-            actualizarGranTotal();
-        }
+      mensaje += "Gracias por elegir productos saludables y naturales, Esperamos cumplir con tus expectativas.\n\n";
+      mensaje += "Pedidos y consultas: https://wa.me/573004769285";
+      
+      return mensaje;
+    }
 
-        function actualizarGranTotal() {
-            let total = 0;
-            document.querySelectorAll("#facturaBody tr td:nth-child(4)").forEach(td => {
-                total += parseInt(td.textContent.replace(/\D/g, "")) || 0;
-            });
-            document.getElementById("granTotal").textContent = `$${total.toLocaleString("es-CO")}`;
-        }
-
-        function eliminarFila(btn) {
-            btn.parentElement.parentElement.remove();
-            actualizarGranTotal();
-        }
-
-        function generarMensajeWhatsApp() {
-            let mensaje = "Hola, deseo realizar el siguiente pedido:\n";
-            const rows = document.querySelectorAll("#facturaBody tr");
-
-            rows.forEach(row => {
-                const producto = row.cells[0].innerText;
-                const cantidad = row.cells[1].innerText;
-                const precio = row.cells[2].innerText;
-                const total = row.cells[3].innerText;
-
-                mensaje += `${producto} - ${cantidad} x ${precio} = ${total}\n`;
-            });
-
-            return mensaje;
-        }
-
-        document.getElementById("producto").addEventListener("change", actualizarPrecio);
-        document.getElementById("cantidad").addEventListener("input", calcularTotal);
-        document.getElementById("btnAgregar").addEventListener("click", agregarProducto);
-        document.getElementById("btnEnviarWhatsApp").addEventListener("click", enviarWhatsApp);
-        document.getElementById("btnGuardarVenta").addEventListener("click", guardarVenta);
-        document.addEventListener("DOMContentLoaded", cargarProductos);
-
-        async function guardarVenta() {
-            const detallesVenta = generarMensajeWhatsApp();
-            if (!detallesVenta.trim()) {
-                alert("No hay productos en la factura.");
-                return;
-            }
-
-            try {
-                await addDoc(collection(db, "ventas"), {
-                    detalles: detallesVenta,
-                    fecha: new Date().toISOString()
-                });
-                alert("Venta guardada correctamente.");
-            } catch (error) {
-                console.error("Error al guardar la venta:", error);
-                alert("Ocurrió un error al guardar la venta.");
-            }
-        }
-
-        function enviarWhatsApp() {
-            const telefono = document.getElementById("telefono").value;
-            if (!telefono) {
-                alert("Por favor, ingresa un número de WhatsApp.");
-                return;
-            }
-
-            const mensaje = generarMensajeWhatsApp();
-            const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
-            window.open(url, "_blank");
-        }
-    </script>
+    document.getElementById("btnEnviarWhatsApp").addEventListener("click", function() {
+      const telefono = document.getElementById("telefono").value;
+      if (!telefono) {
+        alert("Por favor, ingresa un número de WhatsApp.");
+        return;
+      }
+      const mensaje = generarMensajeWhatsApp();
+      const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, "_blank");
+    });
+  </script>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

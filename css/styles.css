@@ -1,4 +1,4 @@
-/* Archivo: styles.css */
+/* Correcciones aplicadas en styles.css */
 
 /* Estilos generales */
 body {
@@ -11,13 +11,14 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
     text-align: center;
-    color: #198754; /* Verde Bootstrap */
+    color: #198754;
     font-weight: bold;
 }
 
 /* Contenedor principal */
 .container {
-    width: 80%;
+    width: 90%;
+    max-width: 1200px;
     margin: auto;
     background: white;
     padding: 20px;
@@ -26,9 +27,24 @@ h1, h2, h3, h4, h5, h6 {
     margin-top: 20px;
 }
 
+/* Mejoras responsivas */
+@media screen and (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 10px;
+    }
+    .table {
+        font-size: 14px;
+    }
+    .btn {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+
 /* Barra de navegación */
 .navbar {
-    background-color: #198754 !important; /* Verde Bootstrap */
+    background-color: #198754 !important;
 }
 
 .navbar .nav-link {
@@ -36,7 +52,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar .nav-link:hover {
-    color: #f8f9fa !important; /* Cambio de color al pasar el mouse */
+    color: #f8f9fa !important;
 }
 
 /* Botones */
@@ -61,7 +77,8 @@ th, td {
     text-align: left;
 }
 
-/* Asegurar visibilidad de los inputs */
+/* Ajustes en inputs */
 input, select {
     color: black;
+    font-size: 16px;
 }
