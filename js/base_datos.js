@@ -1,5 +1,3 @@
-/* Correcciones aplicadas en base_datos.js */
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { 
     getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc 
@@ -32,7 +30,8 @@ async function cargarProductos() {
             fila.setAttribute("data-id", docSnap.id);
             fila.innerHTML = `
                 <td contenteditable="true" id="nombre-${docSnap.id}">${producto.nombre}</td>
-                <td contenteditable="true" id="precio-${docSnap.id}">$${producto.precioSugerido.toLocaleString("es-CO")}</td>
+                <td contenteditable="true" id="precioSugerido-${docSnap.id}">${producto.precioSugerido}</td>
+                <td contenteditable="true" id="precio-${docSnap.id}">${producto.precio}</td>
                 <td contenteditable="true" id="stock-${docSnap.id}">${producto.stock}</td>
                 <td>
                     <button class="btn btn-success btn-sm guardar-btn" data-id="${docSnap.id}">Guardar</button>
@@ -62,10 +61,11 @@ async function cargarProductos() {
 
 async function guardarCambios(id) {
     const nombre = document.getElementById(`nombre-${id}`).innerText.trim();
-    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.replace(/\D/g, ""));
+    const precioSugerido = parseFloat(document.getElementById(`precioSugerido-${id}`).innerText.trim());
+    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.trim());
     const stock = parseInt(document.getElementById(`stock-${id}`).innerText.trim());
 
-    if (!nombre || isNaN(precio) || isNaN(stock)) {
+    if (!nombre || isNaN(precioSugerido) || isNaN(precio) || isNaN(stock)) {
         alert("Todos los campos deben estar llenos y ser válidos.");
         return;
     }
@@ -73,7 +73,8 @@ async function guardarCambios(id) {
     try {
         await updateDoc(doc(db, "productos", id), {
             nombre: nombre,
-            precioSugerido: precio,
+            precioSugerido: precioSugerido,
+            precio: precio,
             stock: stock
         });
         alert("Producto actualizado correctamente.");
@@ -99,10 +100,11 @@ async function eliminarProducto(id) {
 document.getElementById("productoForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const nombre = document.getElementById("nombre").value.trim();
-    const precio = parseFloat(document.getElementById("precioSugerido").value);
+    const precioSugerido = parseFloat(document.getElementById("precioSugerido").value);
+    const precio = parseFloat(document.getElementById("precio").value);
     const stock = parseInt(document.getElementById("stock").value);
     
-    if (!nombre || isNaN(precio) || isNaN(stock)) {
+    if (!nombre || isNaN(precioSugerido) || isNaN(precio) || isNaN(stock)) {
         alert("Todos los campos deben estar llenos y ser válidos.");
         return;
     }
@@ -110,7 +112,8 @@ document.getElementById("productoForm").addEventListener("submit", async (event)
     try {
         await addDoc(collection(db, "productos"), { 
             nombre: nombre, 
-            precioSugerido: precio, 
+            precioSugerido: precioSugerido, 
+            precio: precio,
             stock: stock 
         });
         alert("Producto agregado correctamente.");
