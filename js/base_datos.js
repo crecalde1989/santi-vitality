@@ -26,12 +26,16 @@ async function cargarProductos() {
         const querySnapshot = await getDocs(collection(db, "productos"));
         querySnapshot.forEach((docSnap) => {
             const producto = docSnap.data();
+            // Si los campos están vacíos, se asigna 0
+            const precioSugerido = producto.precioSugerido || 0;
+            const precio = producto.precio || 0;
+            
             const fila = document.createElement("tr");
             fila.setAttribute("data-id", docSnap.id);
             fila.innerHTML = `
                 <td contenteditable="true" id="nombre-${docSnap.id}">${producto.nombre}</td>
-                <td contenteditable="true" id="precioSugerido-${docSnap.id}">${producto.precioSugerido}</td>
-                <td contenteditable="true" id="precio-${docSnap.id}">${producto.precio}</td>
+                <td contenteditable="true" id="precioSugerido-${docSnap.id}">$${precioSugerido.toLocaleString("es-CO")}</td>
+                <td contenteditable="true" id="precio-${docSnap.id}">$${precio.toLocaleString("es-CO")}</td>
                 <td contenteditable="true" id="stock-${docSnap.id}">${producto.stock}</td>
                 <td>
                     <button class="btn btn-success btn-sm guardar-btn" data-id="${docSnap.id}">Guardar</button>
@@ -61,8 +65,8 @@ async function cargarProductos() {
 
 async function guardarCambios(id) {
     const nombre = document.getElementById(`nombre-${id}`).innerText.trim();
-    const precioSugerido = parseFloat(document.getElementById(`precioSugerido-${id}`).innerText.trim());
-    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.trim());
+    const precioSugerido = parseFloat(document.getElementById(`precioSugerido-${id}`).innerText.replace(/\D/g, "")) || 0;
+    const precio = parseFloat(document.getElementById(`precio-${id}`).innerText.replace(/\D/g, "")) || 0;
     const stock = parseInt(document.getElementById(`stock-${id}`).innerText.trim());
 
     if (!nombre || isNaN(precioSugerido) || isNaN(precio) || isNaN(stock)) {
@@ -100,8 +104,8 @@ async function eliminarProducto(id) {
 document.getElementById("productoForm").addEventListener("submit", async (event) => {
     event.preventDefault();
     const nombre = document.getElementById("nombre").value.trim();
-    const precioSugerido = parseFloat(document.getElementById("precioSugerido").value);
-    const precio = parseFloat(document.getElementById("precio").value);
+    const precioSugerido = parseFloat(document.getElementById("precioSugerido").value) || 0;
+    const precio = parseFloat(document.getElementById("precio").value) || 0;
     const stock = parseInt(document.getElementById("stock").value);
     
     if (!nombre || isNaN(precioSugerido) || isNaN(precio) || isNaN(stock)) {
